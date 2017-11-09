@@ -1,0 +1,24 @@
+#!/bin/bash
+export LANG=en_US
+#export LANG=zh_CN.UTF-8
+#svr=`awk -v nvar="$1" '{a[$1] = $2}END{print a[nvar]}' testmachine`
+user="work"
+svr=""
+passwd="wangzhi04"
+workpath=$(cd `dirname $0`;pwd)
+RELAYSVR="relay01.baidu.com"
+if [ $# -eq 2 -a "x$2" = "x2" ]; then
+    RELAYSVR="relay02.baidu.com"
+elif [ $# -eq 2 -a "x$2" = "x3" ]; then
+    RELAYSVR="bb-sns-relay03.bb01.baidu.com"
+fi
+eval $(awk -v nvar="$1" '{a[$1] = $2}END{split(a[nvar],b,",");printf("user=%s;svr=%s;passwd=%s;",b[2],b[1],b[3]);}' ${workpath}/testmachine)
+#echo $passwd
+#echo $svr
+#echo $user
+#echo $RELAYSVR
+if [[ "${svr}x" = "x" ]]; then
+    echo "host empty!"
+    exit 1
+fi
+${workpath}/mylg.exp $svr $user $passwd $RELAYSVR

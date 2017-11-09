@@ -1,0 +1,57 @@
+#!/usr/bin/expect -f
+#author:zhangzhibiao01@baidu.com 2012.11.09
+
+trap {
+    set rows [stty rows]
+    set cols [stty columns]
+    stty rows $rows columns $cols < $spawn_out(slave,name)
+} WINCH
+
+#set timeout 300
+#set RELAYSVR relay01.baidu.com 
+#set RELAYSVR relay02.baidu.com 
+#set RELAYSVR bpitrelay.internal.baidu.com
+set USER wangzhi04
+set sshhost [lindex $argv 0]
+set sshuser [lindex $argv 1]
+set passwd [lindex $argv 2]
+set RELAYSVR [lindex $argv 3]
+#send_user $sshhost
+spawn ssh $USER@$RELAYSVR
+
+#expect_user -re "(.*)\n" { set PASSWORD $expect_out(1,string) }
+
+expect {
+   "*assword*" { 
+        expect_user -re "(.*)\n" { set PASSWORD $expect_out(1,string) }
+#send_user "112358${PASSWORD}\r"
+        send "898901${PASSWORD}\r"
+        exp_continue
+    } 
+   "*PASSCODE*" { 
+        expect_user -re "(.*)\n" { set PASSWORD $expect_out(1,string) }
+#send_user "112358${PASSWORD}\r"
+        send "898901${PASSWORD}\r" 
+        exp_continue
+    } 
+   "*bash-baidu-ssl*" { send "ssh $sshuser@$sshhost\r" }
+}
+
+expect {
+    "*sure you want to continue connecting*" {
+        sleep .1
+        exp_send "yes\r"
+        exp_continue
+    }
+    "*password*" {
+        sleep .1
+        exp_send -- "$passwd\r"
+    }
+    "*$*" {
+        sleep .1
+        exp_send "ls\r"
+    }
+}
+interact
+#expect eof
+exit
