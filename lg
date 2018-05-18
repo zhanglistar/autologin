@@ -4,13 +4,13 @@ export LANG=en_US
 #svr=`awk -v nvar="$1" '{a[$1] = $2}END{print a[nvar]}' testmachine`
 user="work"
 svr=""
-passwd="wangzhi04"
+passwd="xxx"
 workpath=$(cd `dirname $0`;pwd)
-RELAYSVR="relay01.baidu.com"
+RELAYSVR="relay01xxxxx."
 if [ $# -eq 2 -a "x$2" = "x2" ]; then
-    RELAYSVR="relay02.baidu.com"
+    RELAYSVR="relay02.xxxx.com"
 elif [ $# -eq 2 -a "x$2" = "x3" ]; then
-    RELAYSVR="bb-sns-relay03.bb01.baidu.com"
+    RELAYSVR="bb.bb01.xxx.com"
 fi
 eval $(awk -v nvar="$1" '{a[$1] = $2}END{split(a[nvar],b,",");printf("user=%s;svr=%s;passwd=%s;",b[2],b[1],b[3]);}' ${workpath}/testmachine)
 #echo $passwd
